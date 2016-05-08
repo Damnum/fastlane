@@ -262,7 +262,10 @@ module Frameit
 
       config_path = File.join(File.expand_path("..", screenshot.path), "Framefile.json")
       config_path = File.join(File.expand_path("../..", screenshot.path), "Framefile.json") unless File.exist? config_path
+      config_path = File.join(File.expand_path("../../..", screenshot.path), "Framefile.json") unless File.exist? config_path
+      config_path = File.join(File.expand_path("../../../..", screenshot.path), "Framefile.json") unless File.exist? config_path
       file = ConfigParser.new.load(config_path)
+      UI.message "No Config File found in path: #{config_path}" unless file
       return {} unless file # no config file at all
       @config = file.fetch_value(screenshot.path)
     end
@@ -273,6 +276,8 @@ module Frameit
 
       # Try to get it from a keyword.strings or title.strings file
       strings_path = File.join(File.expand_path("..", screenshot.path), "#{type}.strings")
+      strings_path = File.join(File.expand_path("../..", screenshot.path), "#{type}.strings") unless File.exist? strings_path
+      strings_path = File.join(File.expand_path("../../..", screenshot.path), "#{type}.strings") unless File.exist? strings_path
       if File.exist? strings_path
         parsed = StringsParser.parse(strings_path)
         result = parsed.find { |k, v| screenshot.path.upcase.include? k.upcase }
